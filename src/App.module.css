@@ -10,8 +10,9 @@
   font-size: 30px; 
 }
 
-.thankYou {
-  font-size: 25px;
+.footer {
+  font-size: 20px;
   text-align: center; 
   font-weight: bold; 
+  padding: 0px 100px;
 }

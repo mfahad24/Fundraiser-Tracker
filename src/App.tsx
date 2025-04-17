@@ -1,45 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import Meter from "./components/Meter/Meter";
 
+import { isOver75Percent, renderBackgroundColor } from "./utils/util";
+
 import styles from "./App.module.css";
 
+type Data = {
+  donated: number | null;
+  goal: number | null;
+  subtitle: string;
+  description: string;
+  thankYou: string;
+};
+
 function App() {
-  const [data, setData] = useState({
-    donated: "",
-    goal: "",
+  const [data, setData] = useState<Data>({
+    donated: null,
+    goal: null,
     subtitle: "",
+    description: "",
     thankYou: "",
   });
   const [loading, setLoading] = useState(true);
-  const donatedRef = useRef("");
+  const donatedRef = useRef<HTMLInputElement | null | number>(null);
   const sheetId = "1vcTGSL2rpZiBWqVzEpJa_cL18sDaeLP8E4LtLi1XxFM";
   const sheet = "Sheet2";
   const key = import.meta.env.VITE_GOOGLE_SHEETS_KEY;
-  const { donated, goal, subtitle, thankYou } = data;
-  const isOver75Percent = (Number(donated) / Number(goal)) * 100 > 75;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheet}?key=${key}`;
+
+  const { donated, goal, subtitle, description, thankYou } = data;
 
   useEffect(() => {
-    fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheet}?key=${key}`
-    )
+    fetch(url)
       .then((response) => response.json())
       .then((result) => {
-        const donated = result.values[1][2];
-        donatedRef.current = result.values[1][2];
-        const goal = result.values[1][3];
+        const donated = Number(result.values[1][2]);
+        donatedRef.current = Number(result.values[1][2]);
+        const goal = Number(result.values[1][3]);
         const subtitle = result.values[1][5];
-        const thankYou = result.values[1][6];
+        const description = result.values[1][6];
+        const thankYou = result.values[1][7];
 
-        document.body.style.backgroundColor =
-          result.values[1][7] === undefined
-            ? "lightsteelblue"
-            : `${result.values[1][7]}`;
-        document.body.style.transition = "background-color 3s ease";
+        renderBackgroundColor(result.values[1][8]);
 
         setData({
           donated,
           goal,
           subtitle,
+          description,
           thankYou,
         });
       })
@@ -53,9 +61,7 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch(
-        `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheet}?key=${key}`
-      )
+      fetch(url)
         .then((response) => response.json())
         .then((result) => {
           if (donatedRef.current == result.values[1][2]) {
@@ -64,12 +70,12 @@ function App() {
             );
             return;
           } else {
-            donatedRef.current = result.values[1][2];
+            donatedRef.current = Number(result.values[1][2]);
             setData((prev) => ({
               ...prev,
-              donated: result.values[1][2],
+              donated: Number(result.values[1][2]),
             }));
-            console.log("updated state and donated ref");
+            console.log("updated state and ref");
           }
         })
         .catch((error) =>
@@ -95,8 +101,10 @@ function App() {
           thankYou={thankYou}
         />
       )}
-      <p className={styles.thankYou}>
-        {isOver75Percent && thankYou ? thankYou : ""}
+      <p className={styles.footer}>
+        {isOver75Percent(donated, goal) && thankYou
+          ? thankYou
+          : description && description}
       </p>
     </>
   );

@@ -1,7 +1,7 @@
 .donationMeter {
   display: flex;
   flex-direction: column;
-  margin-left: 45%;
+  margin-left: 47%;
   margin-top: 50px;
   width: 100px;
   .glass {
@@ -28,7 +28,7 @@
   }
   .goal {
     font-size: 30px;
-    margin-bottom: 10px; 
+    margin-bottom: 40px; 
     margin-left: -20px;
   }
   .total {

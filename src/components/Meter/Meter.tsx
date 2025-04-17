@@ -1,4 +1,4 @@
-import donationPercentage from "../../utils/donationPercentage.tsx";
+import { donationPercentage, is100Percent } from "../../utils/util";
 
 import styles from "./Meter.module.css";
 
@@ -7,30 +7,43 @@ function Meter({
   goal,
   subtitle,
 }: {
-  donated: string;
-  goal: string;
+  donated: number | null;
+  goal: number | null;
   subtitle: string;
   thankYou: string;
 }) {
-  const goalWithCommas = Number(goal)?.toLocaleString();
-  const donatedWithCommas = Number(donated)?.toLocaleString();
-  const is100Percent = Number(donated) / Number(goal) === 1;
+  const goalWithCommas = goal?.toLocaleString();
+  const donatedWithCommas = donated?.toLocaleString();
 
   return (
     <div className={styles.donationMeter}>
       <strong className={styles.title}>IONA Fundraiser</strong>
       <strong className={styles.subtitle}>{subtitle ? subtitle : ""}</strong>
       <strong className={styles.goal}>
-        {is100Percent
+        {is100Percent(donated, goal)
           ? `Goal of $${goalWithCommas} achieved!`
           : `Goal $${goalWithCommas}`}
       </strong>
       <span className={styles.glass}>
         <strong
           className={styles.total}
-          style={{ bottom: "40%", marginRight: "20px" }}
+          style={{
+            bottom: `${donationPercentage(donated, goal)}`,
+            marginRight: "35px",
+            width: "310px",
+            textAlign: "right",
+          }}
         >
-          {is100Percent ? "" : `Donated $${donatedWithCommas}`}
+          {is100Percent(donated, goal) ? "" : `$${donatedWithCommas} Donated`}
+        </strong>
+        <strong
+          className={styles.total}
+          style={{
+            bottom: `${donationPercentage(donated, goal)}`,
+            width: "31px",
+          }}
+        >
+          {is100Percent(donated, goal) ? "" : `___`}
         </strong>
         <span
           className={styles.amount}
