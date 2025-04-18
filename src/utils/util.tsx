@@ -7,7 +7,7 @@
 export const isInvalidCssColor = (color: string) => {
   const style = new Option().style;
   style.color = color;
-  console.log(style);
+
   return style.color === "";
 };
 
@@ -16,11 +16,21 @@ export const donationPercentage = (
   goal: number | null
 ) => {
   if (donated && goal) {
+    console.log(donated, goal);
     if (donated / goal >= 0.97) {
       return `${100 - 3}%`;
+    } else if (donated / goal <= 0.05) {
+      return "5%";
     } else {
-      return `${(Number(donated) / Number(goal)) * 100}%`;
+      return `${(donated / goal) * 100}%`;
     }
+  }
+  return "1%";
+};
+
+export const isNegative = (donated: number | null, goal: number | null) => {
+  if (donated && goal) {
+    return donated / goal < 0;
   }
 };
 
