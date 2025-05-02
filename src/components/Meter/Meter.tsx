@@ -7,14 +7,21 @@ function Meter({
   donated,
   goal,
   subtitle,
+  title,
 }: {
   donated: number | null;
   goal: number | null;
   subtitle: string;
+  title: string;
 }) {
   return (
     <div className={styles.donationMeter}>
-      <MeterHeader donated={donated} goal={goal} subtitle={subtitle} />
+      <MeterHeader
+        donated={donated}
+        goal={goal}
+        subtitle={subtitle}
+        title={title}
+      />
       <MeterBody donated={donated} goal={goal} />
     </div>
   );

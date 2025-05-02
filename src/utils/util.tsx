@@ -16,7 +16,6 @@ export const donationPercentage = (
   goal: number | null
 ) => {
   if (donated && goal) {
-    console.log(donated, goal);
     if (donated / goal >= 0.97) {
       return `${100 - 3}%`;
     } else if (donated / goal <= 0.05) {

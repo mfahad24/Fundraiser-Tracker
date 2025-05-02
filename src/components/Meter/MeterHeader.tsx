@@ -6,22 +6,26 @@ function MeterHeader({
   donated,
   goal,
   subtitle,
+  title,
 }: {
   donated: number | null;
   goal: number | null;
   subtitle: string;
+  title: string;
 }) {
   const goalWithCommas = goal?.toLocaleString();
 
   return (
     <>
-      <strong className={styles.title}>IONA Fundraiser</strong>
-      <strong className={styles.subtitle}>{subtitle ? subtitle : ""}</strong>
-      <strong className={styles.goal}>
-        {is100Percent(donated, goal)
-          ? `Goal of $${goalWithCommas} achieved!`
-          : `Goal $${goalWithCommas}`}
-      </strong>
+      <div>
+        <strong className={styles.title}>{title}</strong>
+        <strong className={styles.subtitle}>{subtitle ? subtitle : ""}</strong>
+        <strong className={styles.goal}>
+          {is100Percent(donated, goal)
+            ? `Goal of $${goalWithCommas} achieved!`
+            : `Goal $${goalWithCommas}`}
+        </strong>
+      </div>
     </>
   );
 }

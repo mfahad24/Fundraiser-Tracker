@@ -11,6 +11,7 @@ import styles from "./App.module.css";
 type Data = {
   donated: number | null;
   goal: number | null;
+  title: string;
   subtitle: string;
   description: string;
   thankYou: string;
@@ -19,15 +20,15 @@ type Data = {
 /*
 1. move fetch call to method so its not repeated
 2. make sheetId, sheet, and key user enterable properties
-3. tests
-4. readme
-5. add cookies / session storage 
+3. readme
+4. add cookies / session storage 
 */
 
 function App() {
   const [data, setData] = useState<Data>({
     donated: null,
     goal: null,
+    title: "",
     subtitle: "",
     description: "",
     thankYou: "",
@@ -40,17 +41,18 @@ function App() {
   const key = import.meta.env.VITE_GOOGLE_SHEETS_KEY;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheet}?key=${key}`;
 
-  const { donated, goal, subtitle, description, thankYou } = data;
+  const { description, donated, goal, subtitle, thankYou, title } = data;
 
   useEffect(() => {
     fetch(url)
       .then((response) => response.json())
       .then((result) => {
         const { values } = result;
-
+        console.log(result);
         const donated = Number(values[1][2]);
         donatedRef.current = Number(values[1][2]);
         const goal = Number(values[1][3]);
+        const title = values[1][4];
         const subtitle = values[1][5];
         const description = values[1][6];
         const thankYou = values[1][7];
@@ -64,6 +66,7 @@ function App() {
         setData({
           donated,
           goal,
+          title,
           subtitle,
           description,
           thankYou,
@@ -113,11 +116,16 @@ function App() {
     <>
       {negativeBalance && <NegativeBalance />}
       {loading ? (
-        <span className={styles.loading}>
+        <span className={styles.loading} role="spinner">
           Loading<span className={styles.dots}></span>
         </span>
       ) : (
-        <Meter donated={donated} goal={goal} subtitle={subtitle} />
+        <Meter
+          donated={donated}
+          goal={goal}
+          subtitle={subtitle}
+          title={title}
+        />
       )}
       <MeterFooter
         description={description}

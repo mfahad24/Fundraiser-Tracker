@@ -12,10 +12,11 @@
 }
 
 .footer {
-  font-size: 20px;
+  font-size: 18px;
   text-align: center; 
   font-weight: bold; 
   padding: 0px 100px;
+  margin-top: 0px; 
 }
 
 .dots::after {
